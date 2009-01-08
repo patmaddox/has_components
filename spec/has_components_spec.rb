@@ -18,4 +18,14 @@ describe "HasComponents" do
   it "should ask instances for components of a certain type" do
     Frame.new.lenses.should == []
   end
+
+  it "should allow adding component relations the long way" do
+    no = Lense.create
+    yes = Lense.create!
+    f = Frame.create!
+    FramesLenses.create! :frame => f, :lense => yes
+    f.reload
+    f.lenses.should include(yes)
+    f.lenses.should_not include(no)
+  end
 end
