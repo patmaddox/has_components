@@ -1,11 +1,14 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
 describe "HasComponents" do
+  # Define them blank and then reopen them
+  # so we don't have to rely on const_missing
+  class Frame < ActiveRecord::Base; end
+  class Lense < ActiveRecord::Base; end
+
   class Frame < ActiveRecord::Base
     has_components :lenses
   end
-
-  class Lense < ActiveRecord::Base; end
 
   it "should know what kind of components it has" do
     Frame.component_types.should include(:lenses)
