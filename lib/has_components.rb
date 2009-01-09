@@ -20,15 +20,15 @@ class ActiveRecord::Base
       end
     END
 
-    has_many relation.table, :foreign_key => "first_id", :class_name => relation.class_name
-    has_many :seconds, :through => relation.table
-    alias_method component_name, :seconds
+    has_many relation.table, :foreign_key => relation.foreign_key, :class_name => relation.class_name
+    has_many relation.source, :through => relation.table
+    alias_method component_name, relation.source
   end
 end
 
 class RelationBuilder
   attr_reader :class_name, :table, :first_class, :second_class,
-              :first, :second
+              :first, :second, :source, :foreign_key
 
   def initialize(from_klass, relation)
     @from_klass = from_klass
@@ -40,6 +40,13 @@ class RelationBuilder
     @first = @first_class.underscore.to_sym
     @second_class = [@from_klass, @relation_klass].map {|k| k.name }.max
     @second = @second_class.underscore.to_sym
+    if @from_klass.name == @first_class
+      @source = :seconds
+      @foreign_key = "first_id"
+    else
+      @source = :firsts
+      @foreign_key = "second_id"
+    end
   end
 end
 
