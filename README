@@ -1,7 +1,29 @@
 has_components
 ==============
 
-Description goes here.
+This idea began as a way of specifying potentially configurable
+components (i.e. a lens can be put into one of 10 different frames).
+Right now it appears to be a method of defining has_many :through
+relations really quickly without having to create lots of join tables
+and models manually.  Not sure where it'll go from here.
+
+Start off by creating a migration that has:
+
+  create_table :component_relations do |t|
+    t.column :first_id, :integer
+    t.column :second_id, :integer
+    t.column :type, :string
+  end
+
+Then in the models that you want a has_many :through, just call has_components instead:
+
+  class Lens
+    has_components :frames
+  end
+
+  Lens.find(2).frames << Frames.find(345)
+
+etc
 
 COPYRIGHT
 =========
