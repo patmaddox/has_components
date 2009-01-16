@@ -30,7 +30,7 @@ module HasComponents
   module Validations
     def validates_component(component, options={ })
       validates_each(:frame) do |record, attr, value|
-        record.errors.add(:frame, "does not work with lense") if record.lense.frames.find_by_id(record.frame.id).nil?
+        record.errors.add(:frame, "does not work with lense") if record.lense && record.frame && record.lense.frames.find_by_id(record.frame.id).nil?
       end
     end
   end

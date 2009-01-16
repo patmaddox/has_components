@@ -26,4 +26,12 @@ describe "validates_component" do
     s.should_not be_valid
     s.should have(1).error_on(:frame)
   end
+
+  it "should be valid when validated component is not set" do
+    Style.new(:lense => @lense).should be_valid
+  end
+
+  it "should be valid when through component is not set" do
+    Style.new(:frame => @frame).should be_valid
+  end
 end
