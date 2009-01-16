@@ -1,5 +1,5 @@
 module HasComponents
-  module ClassMethods
+  module ArMethods
     def has_components(component_name)
       unless methods.include?("component_types")
         class << self
@@ -25,10 +25,12 @@ module HasComponents
       has_many relation.source, :through => relation.table
       alias_method component_name, relation.source
     end
-  end
 
-  module Validations
-    def validates_component(component, options={ })
+    def has_available_components(component, options={ })
+      define_method(component.to_s.pluralize) { component.to_s.classify.constantize.find(:all) }
+    end
+
+    def validates_component(component, options)
       through_list = [options[:through]].flatten
       validates_each(component) do |record, attr, value|
         through_list.each do |through|
@@ -42,8 +44,7 @@ module HasComponents
   end
 end
 
-ActiveRecord::Base.extend HasComponents::ClassMethods
-ActiveRecord::Base.extend HasComponents::Validations
+ActiveRecord::Base.extend HasComponents::ArMethods
 
 class RelationBuilder
   attr_reader :class_name, :table, :first_class, :second_class,

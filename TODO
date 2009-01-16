@@ -1,2 +1,2 @@
-Create a validates_components
 Create available_foos based on configured components
+Make validates_components ohtomatically do shit instead of using :through
