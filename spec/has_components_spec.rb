@@ -5,12 +5,14 @@ describe "HasComponents" do
   # so we don't have to rely on const_missing
   class Frame < ActiveRecord::Base; end
   class Lense < ActiveRecord::Base; end
+  class Case < ActiveRecord::Base; end
 
-  class Frame < ActiveRecord::Base
-    has_components :lenses
-  end
   class Lense < ActiveRecord::Base
     has_components :frames
+  end
+  class Frame < ActiveRecord::Base
+    has_components :lenses
+    has_components :cases
   end
 
   it "should know what kind of components it has" do
@@ -56,5 +58,11 @@ describe "HasComponents" do
     f.reload
     f.lenses.should include(yes)
     f.lenses.should_not include(no)
+  end
+
+  it "should work with multiple components" do
+    f = Frame.new
+    f.lenses << Lense.new
+    f.cases << Case.new
   end
 end

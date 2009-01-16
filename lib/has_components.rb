@@ -26,6 +26,17 @@ class ActiveRecord::Base
   end
 end
 
+module HasComponents
+  module Validations
+    def validates_component(component, options={ })
+      validates_each(:frame) do |record, attr, value|
+        record.errors.add(:frame, "does not work with lense") if record.lense.frames.find_by_id(record.frame.id).nil?
+      end
+    end
+  end
+end
+ActiveRecord::Base.extend HasComponents::Validations
+
 class RelationBuilder
   attr_reader :class_name, :table, :first_class, :second_class,
               :first, :second, :source, :foreign_key

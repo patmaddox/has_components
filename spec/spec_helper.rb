@@ -1,6 +1,7 @@
 require 'rubygems'
-require 'spec'
 require 'active_record'
+require 'spec'
+require 'spec/rails/extensions/active_record/base'
 this_dir = File.expand_path(File.dirname(__FILE__))
 require this_dir + '/../lib/has_components.rb'
 

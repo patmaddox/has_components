@@ -11,6 +11,11 @@ ActiveRecord::Schema.define(:version => 0) do
     t.column :name, :string
   end
 
+  create_table :styles, :force => true do |t|
+    t.integer :frame_id
+    t.integer :lense_id
+  end
+
   create_table :component_relations, :force => true do |t|
     t.column :first_id, :integer
     t.column :second_id, :integer
