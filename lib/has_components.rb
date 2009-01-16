@@ -29,11 +29,13 @@ end
 module HasComponents
   module Validations
     def validates_component(component, options={ })
-      through = options[:through]
+      through_list = [options[:through]].flatten
       validates_each(component) do |record, attr, value|
-        if record.send(component) && record.send(through) &&
-            record.send(through).send(component.to_s.pluralize).find_by_id(record.send(component).id).nil?
-          record.errors.add(component, "does not work with #{through}")
+        through_list.each do |through|
+          if record.send(component) && record.send(through) &&
+              record.send(through).send(component.to_s.pluralize).find_by_id(record.send(component).id).nil?
+            record.errors.add(component, "does not work with #{through}")
+          end
         end
       end
     end

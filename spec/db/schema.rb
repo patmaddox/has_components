@@ -14,6 +14,7 @@ ActiveRecord::Schema.define(:version => 0) do
   create_table :styles, :force => true do |t|
     t.integer :frame_id
     t.integer :lense_id
+    t.integer :case_id
   end
 
   create_table :component_relations, :force => true do |t|
