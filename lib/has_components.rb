@@ -30,7 +30,7 @@ module HasComponents
       list = component.to_s.pluralize
       klass = component.to_s.classify.constantize
 
-      define_method(list) do
+      define_method("available_#{list}") do
         if options[:through]
           through = [options[:through]].flatten
           assocs = options[:through].map {|a| send(a) }.select {|a| a}
