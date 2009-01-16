@@ -27,7 +27,22 @@ module HasComponents
     end
 
     def has_available_components(component, options={ })
-      define_method(component.to_s.pluralize) { component.to_s.classify.constantize.find(:all) }
+      list = component.to_s.pluralize
+
+      define_method(list) do
+        results = nil
+        if options[:through]
+          through = [options[:through]].flatten
+          results = if lense && send(:case)
+            lense.send(list) & send(:case).send(list)
+          elsif lense
+            lense.send(list)
+          elsif send(:case)
+            send(:case).send(list)
+          end
+        end
+        results || component.to_s.classify.constantize.find(:all)
+      end
     end
 
     def validates_component(component, options)

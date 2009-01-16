@@ -36,4 +36,24 @@ describe "has_available_components" do
   it "should return the simple Model.find(:all) when no :through" do
     @style.lenses.should =~ [@lense, @lense2]
   end
+
+  it "should return all items if no component is set" do
+    @style.frames.should =~ [@lense_only, @case_only, @shared]
+  end
+
+  it "should return only the items that work with a component if it's set" do
+    @style.lense = @lense
+    @style.frames.should =~ [@lense_only, @shared]
+  end
+
+  it "should return only the items that work with the other component if it's set" do
+    @style.case = @case
+    @style.frames.should =~ [@case_only, @shared]
+  end
+
+  it "should return the shared items if both components are set" do
+    @style.lense = @lense
+    @style.case = @case
+    @style.frames.should == [@shared]
+  end
 end
