@@ -1,17 +1,18 @@
-class ActiveRecord::Base
-  def self.has_components(component_name)
-    unless methods.include?("component_types")
-      class << self
-        attr_reader :component_types
+module HasComponents
+  module ClassMethods
+    def has_components(component_name)
+      unless methods.include?("component_types")
+        class << self
+          attr_reader :component_types
+        end
+        @component_types = []
+        define_method(:component_types) { self.class.component_types }
       end
-      @component_types = []
-      define_method(:component_types) { self.class.component_types }
-    end
-    component_types << component_name
+      component_types << component_name
 
-    relation = RelationBuilder.new(self, component_name)
+      relation = RelationBuilder.new(self, component_name)
 
-    eval <<-END
+      eval <<-END
       class ::#{relation.class_name} < ComponentRelation
         belongs_to :first, :class_name => "#{relation.first_class}"
         belongs_to :second, :class_name => "#{relation.second_class}"
@@ -20,13 +21,12 @@ class ActiveRecord::Base
       end
     END
 
-    has_many relation.table, :foreign_key => relation.foreign_key, :class_name => relation.class_name
-    has_many relation.source, :through => relation.table
-    alias_method component_name, relation.source
+      has_many relation.table, :foreign_key => relation.foreign_key, :class_name => relation.class_name
+      has_many relation.source, :through => relation.table
+      alias_method component_name, relation.source
+    end
   end
-end
 
-module HasComponents
   module Validations
     def validates_component(component, options={ })
       through_list = [options[:through]].flatten
@@ -41,6 +41,8 @@ module HasComponents
     end
   end
 end
+
+ActiveRecord::Base.extend HasComponents::ClassMethods
 ActiveRecord::Base.extend HasComponents::Validations
 
 class RelationBuilder
