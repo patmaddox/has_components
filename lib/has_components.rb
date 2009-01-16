@@ -28,20 +28,17 @@ module HasComponents
 
     def has_available_components(component, options={ })
       list = component.to_s.pluralize
+      klass = component.to_s.classify.constantize
 
       define_method(list) do
-        results = nil
         if options[:through]
           through = [options[:through]].flatten
-          results = if lense && send(:case)
-            lense.send(list) & send(:case).send(list)
-          elsif lense
-            lense.send(list)
-          elsif send(:case)
-            send(:case).send(list)
-          end
+          assocs = options[:through].map {|a| send(a) }.select {|a| a}
+          return klass.find(:all) if assocs.empty?
+          assocs.map {|a| a.send(list) }.inject {|union, local_list| union & local_list }
+        else
+          klass.find(:all)
         end
-        results || component.to_s.classify.constantize.find(:all)
       end
     end
 
